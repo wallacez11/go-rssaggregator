@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/wallacez11/go-rssaggregator/internal/auth"
 	"github.com/wallacez11/go-rssaggregator/internal/database"
 	utils "github.com/wallacez11/go-rssaggregator/util"
 )
@@ -33,6 +34,23 @@ func (apiCfg *ApiConfig) HandlerCreateUser(w http.ResponseWriter, r *http.Reques
 
 	if err != nil {
 		utils.RespondWithError(w, 500, fmt.Sprintf("Error creating a user: %v ", err))
+		return
+	}
+
+	utils.RespondWithJson(w, 201, utils.DatabaseUserToUser(user))
+}
+
+func (apiCfg *ApiConfig) HandlerGetUser(w http.ResponseWriter, r *http.Request) {
+	apikey, err := auth.GetApiKey(r.Header)
+	if err != nil {
+		utils.RespondWithError(w, 400, fmt.Sprintf("Auth error: %v", err))
+		return
+	}
+
+	user, err := apiCfg.Db.GetUserByApiKey(r.Context(), apikey)
+
+	if err != nil {
+		utils.RespondWithError(w, 400, fmt.Sprintf("Couldn't get user: %v", err))
 		return
 	}
 
