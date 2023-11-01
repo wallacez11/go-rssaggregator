@@ -50,3 +50,15 @@ func (apiCfg *ApiConfig) HandlerCreateFeed(w http.ResponseWriter, r *http.Reques
 
 	utils.RespondWithJson(w, 201, utils.DatabaseFeedToFeed(feed))
 }
+
+func (apiCfg *ApiConfig) HandlerGetFeed(w http.ResponseWriter, r *http.Request) {
+
+	feeds, err := apiCfg.Db.GetFeeds(r.Context())
+
+	if err != nil {
+		utils.RespondWithError(w, 500, fmt.Sprintf("Error creating a feed: %v ", err))
+		return
+	}
+
+	utils.RespondWithJson(w, 201, utils.DatabaseMultipleFeeds(feeds))
+}
