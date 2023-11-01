@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 
 	"github.com/go-playground/validator/v10"
@@ -47,4 +48,39 @@ func (apiCfg *ApiConfig) HandlerCreateFeedFollow(w http.ResponseWriter, r *http.
 	}
 
 	utils.RespondWithJson(w, 201, utils.DatabaseConvertFeedFollow(FeedFollow))
+}
+
+func (apiCfg *ApiConfig) HandlerGetFeedFollowByUser(w http.ResponseWriter, r *http.Request, user database.User) {
+
+	FeedFollow, err := apiCfg.Db.GetFeedFollows(r.Context(), user.ID)
+
+	if err != nil {
+		utils.RespondWithError(w, 500, fmt.Sprintf("Error creating a feed: %v ", err))
+		return
+	}
+
+	utils.RespondWithJson(w, 201, utils.DatabaseMultipleFeedsFollow(FeedFollow))
+}
+
+func (apiCfg *ApiConfig) HandlerDeleteFeedFollow(w http.ResponseWriter, r *http.Request, user database.User) {
+
+	feedFollowId := chi.URLParam(r, "feedFollowID")
+	feedFollowIdUuid, err := uuid.Parse(feedFollowId)
+
+	if err != nil {
+		utils.RespondWithError(w, 400, fmt.Sprintf("C: %v ", err))
+		return
+	}
+
+	err = apiCfg.Db.DeleteFeedFollows(r.Context(), database.DeleteFeedFollowsParams{
+		ID:     feedFollowIdUuid,
+		UserID: user.ID,
+	})
+
+	if err != nil {
+		utils.RespondWithError(w, 500, fmt.Sprintf("Error deleting a follow feed: %v ", err))
+		return
+	}
+
+	utils.RespondWithJson(w, 200, struct{}{})
 }

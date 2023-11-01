@@ -57,11 +57,17 @@ func main() {
 
 	v1Router.Get("/ready", rss.HandlerReadiness)
 	v1Router.Get("/err", rss.HandlerError)
+
 	v1Router.Post("/users", apiCfg.HandlerCreateUser)
 	v1Router.Get("/users", apiCfg.MiddlewareAuth(apiCfg.HandlerGetUser))
+
 	v1Router.Post("/feeds", apiCfg.MiddlewareAuth(apiCfg.HandlerCreateFeed))
 	v1Router.Get("/feeds", apiCfg.HandlerGetFeed)
+
 	v1Router.Post("/feed_follows", apiCfg.MiddlewareAuth(apiCfg.HandlerCreateFeedFollow))
+	v1Router.Get("/feed_follows", apiCfg.MiddlewareAuth(apiCfg.HandlerGetFeedFollowByUser))
+	v1Router.Delete("/feed_follows/{feedFollowId}", apiCfg.MiddlewareAuth(apiCfg.HandlerDeleteFeedFollow))
+
 	router.Mount("/v1", v1Router)
 	srv := &http.Server{
 		Handler: router,

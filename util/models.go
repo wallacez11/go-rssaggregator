@@ -79,3 +79,15 @@ func DatabaseMultipleFeeds(dbFeed []database.Feed) []Feed {
 	return feeds
 
 }
+
+func DatabaseMultipleFeedsFollow(dbFeedFollows []database.FeedFollow) []FeedFollows {
+
+	feedsFollows := []FeedFollows{}
+
+	for _, dbFeed := range dbFeedFollows {
+		feedsFollows = append(feedsFollows, DatabaseConvertFeedFollow(dbFeed))
+	}
+
+	return feedsFollows
+
+}
