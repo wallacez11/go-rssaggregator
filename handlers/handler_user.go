@@ -36,9 +36,9 @@ func (apiCfg *ApiConfig) HandlerCreateUser(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	utils.RespondWithJson(w, 201, utils.DatabaseUserToUser(user))
+	utils.RespondWithJson(w, 201, utils.DatabaseConvertUser(user))
 }
 
 func (apiCfg *ApiConfig) HandlerGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
-	utils.RespondWithJson(w, 200, utils.DatabaseUserToUser(user))
+	utils.RespondWithJson(w, 200, utils.DatabaseConvertUser(user))
 }

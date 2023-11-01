@@ -48,7 +48,7 @@ func (apiCfg *ApiConfig) HandlerCreateFeed(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	utils.RespondWithJson(w, 201, utils.DatabaseFeedToFeed(feed))
+	utils.RespondWithJson(w, 201, utils.DatabaseConvertFeed(feed))
 }
 
 func (apiCfg *ApiConfig) HandlerGetFeed(w http.ResponseWriter, r *http.Request) {
