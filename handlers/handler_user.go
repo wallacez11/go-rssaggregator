@@ -7,14 +7,13 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/wallacez11/go-rssaggregator/internal/auth"
 	"github.com/wallacez11/go-rssaggregator/internal/database"
 	utils "github.com/wallacez11/go-rssaggregator/util"
 )
 
 func (apiCfg *ApiConfig) HandlerCreateUser(w http.ResponseWriter, r *http.Request) {
 	type Parameters struct {
-		Name string `json:name`
+		Name string `json:"name"`
 	}
 	decoder := json.NewDecoder(r.Body)
 	params := &Parameters{}
@@ -40,19 +39,6 @@ func (apiCfg *ApiConfig) HandlerCreateUser(w http.ResponseWriter, r *http.Reques
 	utils.RespondWithJson(w, 201, utils.DatabaseUserToUser(user))
 }
 
-func (apiCfg *ApiConfig) HandlerGetUser(w http.ResponseWriter, r *http.Request) {
-	apikey, err := auth.GetApiKey(r.Header)
-	if err != nil {
-		utils.RespondWithError(w, 400, fmt.Sprintf("Auth error: %v", err))
-		return
-	}
-
-	user, err := apiCfg.Db.GetUserByApiKey(r.Context(), apikey)
-
-	if err != nil {
-		utils.RespondWithError(w, 400, fmt.Sprintf("Couldn't get user: %v", err))
-		return
-	}
-
+func (apiCfg *ApiConfig) HandlerGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
 	utils.RespondWithJson(w, 200, utils.DatabaseUserToUser(user))
 }
