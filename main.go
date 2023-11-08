@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	rss "github.com/wallacez11/go-rssaggregator/handlers"
 
@@ -42,6 +43,8 @@ func main() {
 	apiCfg := db.ApiConfig{
 		Db: database.New(conn),
 	}
+
+	go startScraping(apiCfg.Db, 10, time.Minute)
 
 	v1Router := chi.NewRouter()
 	router := chi.NewRouter()
