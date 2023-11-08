@@ -32,6 +32,17 @@ type FeedFollows struct {
 	FeedId    uuid.UUID `json:"feed_id"`
 }
 
+type Post struct {
+	ID          uuid.UUID `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdateAt    time.Time `json:"update_at"`
+	Title       string    `json:"title"`
+	Description *string   `json:"description"`
+	PublishedAt time.Time `json:"published_at"`
+	Url         string    `json:"url"`
+	FeedID      uuid.UUID `json:"feed_id"`
+}
+
 func DatabaseConvertUser(dbUser database.User) User {
 
 	return User{
@@ -89,5 +100,36 @@ func DatabaseMultipleFeedsFollow(dbFeedFollows []database.FeedFollow) []FeedFoll
 	}
 
 	return feedsFollows
+
+}
+
+func DataBaseConvertPost(dbPost database.Post) Post {
+
+	var description *string
+	if dbPost.Description.Valid {
+		description = &dbPost.Description.String
+	}
+
+	return Post{
+		ID:          dbPost.ID,
+		CreatedAt:   dbPost.CreatedAt,
+		UpdateAt:    dbPost.PublishedAt,
+		Title:       dbPost.Title,
+		Description: description,
+		PublishedAt: dbPost.PublishedAt,
+		Url:         dbPost.Url,
+		FeedID:      dbPost.FeedID,
+	}
+}
+
+func DatabaseMultiplePost(dbFeedFollows []database.Post) []Post {
+
+	MultiplePosts := []Post{}
+
+	for _, Post := range dbFeedFollows {
+		MultiplePosts = append(MultiplePosts, DataBaseConvertPost(Post))
+	}
+
+	return MultiplePosts
 
 }
